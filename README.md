@@ -27,12 +27,14 @@ Your task: **reorder your platoons** so that your army wins at least **3 out of 
 ---
 
 ## How to Run
-git clone this repo
-install requirements.txt 
+git clone this repo >
+create venv >
+install requirements.txt >
 python manage.py runserver
 
 
-Tech Stack
+## Tech Stack
+
 Python 3
 
 Django (if backend used)

@@ -1,4 +1,4 @@
-# Medieval Battle Optimizer
+# Medieval Battle
 
 This is a fun strategy-based simulation where you act as a medieval king deciding which of your army platoons should battle the opponent's — with the goal to win **at least 3 out of 5 battles** (or all 5 if possible!).
 

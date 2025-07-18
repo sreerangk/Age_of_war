@@ -1,0 +1,92 @@
+{% extends "battles/base.html" %}
+{% block title %}Medieval Battle {% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="text-white mb-3">
+        <span class="crown">👑</span>
+        Medieval Battle
+        <span class="crown">👑</span>
+    </h1>
+    <p class="text-white-50">Strategically arrange your platoons to win at least 3 out of 5 battles!</p>
+</div>
+
+<!-- Unit Advantages -->
+<div class="unit-advantage mb-4">
+    <h3 class="mb-3">Unit Advantages</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li><strong>Militia:</strong> → Spearmen, Light Cavalry</li>
+                <li><strong>Spearmen:</strong> → Light Cavalry, Heavy Cavalry</li>
+                <li><strong>Light Cavalry:</strong> → Foot Archer, Cavalry Archer</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-unstyled">
+                <li><strong>Heavy Cavalry:</strong> → Militia, Foot Archer, Light Cavalry</li>
+                <li><strong>Cavalry Archer:</strong> → Spearmen, Heavy Cavalry</li>
+                <li><strong>Foot Archer:</strong> → Militia, Cavalry Archer</li>
+            </ul>
+        </div>
+    </div>
+    <small class="text-white-50">Units with advantage fight with 2x effectiveness!</small>
+</div>
+
+<!-- Battle Form -->
+<div class="battle-card">
+    <h2 class="text-center mb-4"><span class="sword"></span> Plan Your Battle <span class="sword"></span></h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-section">
+            <div class="mb-3">
+                <label for="{{ form.my_platoons.id_for_label }}" class="form-label"><strong>Your Platoons</strong></label>
+                {{ form.my_platoons }}
+                <div class="form-text text-white-50">Format: UnitClass#Number;UnitClass#Number;...</div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.opponent_platoons.id_for_label }}" class="form-label"><strong>Opponent Platoons</strong></label>
+                {{ form.opponent_platoons }}
+                <div class="form-text text-white-50">Format: UnitClass#Number;UnitClass#Number;...</div>
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-light btn-lg px-5">Calculate Best Strategy</button>
+        </div>
+    </form>
+</div>
+
+{% if recent_battles %}
+<div class="recent-battles">
+    <h3 class="mb-3">📜 Recent Battles</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Your Platoons</th>
+                    <th>Opponent Platoons</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for battle in recent_battles %}
+                <tr>
+                    <td>{{ battle.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ battle.my_platoons|truncatechars:30 }}</td>
+                    <td>{{ battle.opponent_platoons|truncatechars:30 }}</td>
+                    <td>
+                        {% if battle.result == "There is no chance of winning" %}
+                            <span class="badge bg-danger">No Win</span>
+                        {% else %}
+                            <span class="badge bg-success">Strategy Found</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

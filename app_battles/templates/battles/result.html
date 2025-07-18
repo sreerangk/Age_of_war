@@ -1,0 +1,85 @@
+{% extends "battles/base.html" %}
+{% block title %}Battle Results - Medieval Battle{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="text-white mb-3">
+        <span style="font-size: 2rem;">X-</span>
+        Battle Results
+        <span style="font-size: 2rem;">-X</span>
+    </h1>
+    <a href="{% url 'battles:index' %}" class="btn btn-light">← Back to Battle Planner</a>
+</div>
+
+<div class="input-display">
+    <h3 class="mb-3">Battle Setup</h3>
+    <div class="row">
+        <div class="col-md-6">
+            <strong>Your Platoons:</strong><br>
+            <code>{{ my_platoons }}</code>
+        </div>
+        <div class="col-md-6">
+            <strong>Opponent Platoons:</strong><br>
+            <code>{{ opponent_platoons }}</code>
+        </div>
+    </div>
+</div>
+
+{% if result == "There is no chance of winning" %}
+    <div class="result-card text-center">
+        <h2 class="mb-4">No Winning Strategy Found</h2>
+        <p class="lead">Unfortunately, there is no arrangement of your platoons that can win at least 3 out of 5 battles against this opponent.</p>
+        <p>Consider:</p>
+        <ul class="list-unstyled">
+            <li>• Getting more units with advantageous classes</li>
+            <li>• Increasing the size of your existing platoons</li>
+            <li>• Analyzing the opponent's weaknesses</li>
+        </ul>
+    </div>
+{% else %}
+    <div class="strategy-card">
+        <h2 class="text-center mb-4">Winning Strategy Found!</h2>
+        <div class="text-center mb-4">
+            <h3>Optimal Arrangement:</h3>
+            <div class="alert alert-light" role="alert">
+                <strong>{{ result }}</strong>
+            </div>
+        </div>
+    </div>
+
+    {% if detailed_result and detailed_result.battles %}
+    <div class="result-card">
+        <h3 class="mb-4">Battle Analysis</h3>
+        <div class="text-center mb-4">
+            <span class="badge bg-success fs-5">
+                Wins: {{ detailed_result.wins }}/5
+            </span>
+        </div>
+        
+        {% for battle in detailed_result.battles %}
+        <div class="battle-detail {% if battle.result == 'Win' %}win{% elif battle.result == 'Loss' %}loss{% else %}draw{% endif %}">
+            <div class="row align-items-center">
+                <div class="col-md-2"><strong>Battle {{ battle.battle_num }}</strong></div>
+                <div class="col-md-3"><span class="badge bg-primary">{{ battle.my_unit }}</span></div>
+                <div class="col-md-2 text-center"><span style="font-size: 1.2rem;">⚔️</span></div>
+                <div class="col-md-3"><span class="badge bg-secondary">{{ battle.opponent_unit }}</span></div>
+                <div class="col-md-2">
+                    {% if battle.result == 'Win' %}
+                        <span class="badge bg-success">Win</span>
+                    {% elif battle.result == 'Loss' %}
+                        <span class="badge bg-danger">Loss</span>
+                    {% else %}
+                        <span class="badge bg-warning">Draw</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endif %}
+
+<div class="text-center mt-4">
+    <a href="{% url 'battles:index' %}" class="btn btn-light btn-lg">Plan Another Battle</a>
+</div>
+{% endblock %}
